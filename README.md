@@ -1,9 +1,8 @@
-## Запуск Celery
+### Запуск:
 ```
- celery -A tasks.celery worker --loglevel=info --pool=threads
+docker-compose up --build
 ```
-## Запуск API
-```
-fastapi run src/main.py
-```
-Для работы необходиио начать чат с ботом @Python_JWT_Auth_Bot. Для авторизации через Яндес нужно перейти на url "http://localhost:8000/auth/yandex?telegram_chat_id=<ваш user id>"
+### Авторизация Яндекс
+Для работы необходиио начать чат с ботом @Python_JWT_Auth_Bot. 
+Для авторизации через Яндес нужно перейти на url "http://localhost:8000/auth/yandex?telegram_chat_id=<user_id>" где user_id - ваш user_id в телеграмме, который можно узнать с помощью бота @getmyid_bot.
+сразу после авторизации в чат будет отправлено сообщение.

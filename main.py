@@ -26,34 +26,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-BROKER_URL = os.getenv("BROKER_URL")
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
-
-YANDEX_CLIENT_ID = os.getenv("YANDEX_CLIENT_ID")
-YANDEX_CLIENT_SECRET = os.getenv("YANDEX_CLIENT_SECRET")
-YANDEX_REDIRECT_URL = os.getenv("YANDEX_REDIRECT_URL")
-
-VK_CLIENT_ID = os.getenv("VK_CLIENT_ID")
-VK_CLIENT_SECRET = os.getenv("VK_CLIENT_SECRET")
-VK_SERVICE_SECRET = os.getenv("VK_SERVICE_SECRET")
-VK_REDIRECT_URL = os.getenv("VK_REDIRECT_URL")
-
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-
-POSTGRES_USER = os.getenv("POSTGRES_USER")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-POSTGRES_DB = os.getenv("POSTGRES_DB")
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
-CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
 
 
 #database setup
-database_URL = "postgresql+asyncpg://postgres:rj40Vt02lB60z@localhost:5432/python"
-engine = create_async_engine(database_URL,  echo=True)
+engine = create_async_engine(DATABASE_URL,  echo=True)
 Session = async_sessionmaker(engine, expire_on_commit=False)
 
 
@@ -105,9 +82,6 @@ async def create_db_and_tables():
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
 
-# @app.exception_handler(IntegrityError)
-# async def integrity_error_handler(request: Request, exc: IntegrityError):
-#     raise HTTPException(status_code=400, detail="Database constraint violated. Please check your data.")
 
 
 def decode_jwt(token: str = Depends(oauth2_scheme)):
@@ -263,6 +237,7 @@ async def auth_yandex_callback(code: str, state: str ,session: Session = Depends
         await session.commit()
         await session.refresh(new_history)
         role = user.role
+    send_message.delay(telegram_chat_id, "Welcome")
 
     token_expiration = timedelta(days=7)
     token = jwt.encode(

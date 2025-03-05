@@ -2,12 +2,20 @@ from celery import Celery
 import logging
 import telebot
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+BROKER_URL = os.getenv("BROKER_URL")
+
+
 # Replace with your bot token
 TOKEN = '7940187803:AAHzZdoxGo2p2OLwHS7uWWrh7sc_dsI73sc'
 bot = telebot.TeleBot(TOKEN)
 
 # Initialize Celery
-celery = Celery('tasks', broker='pyamqp://guest@localhost//')
+celery = Celery('tasks', broker=BROKER_URL)
 
 
 

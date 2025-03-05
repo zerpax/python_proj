@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field, Column, TIMESTAMP
 from datetime import datetime, UTC
-from typing import List
+from typing import List, Optional
 
 
 
@@ -29,9 +29,9 @@ class Users(UsersBase, table=True):
     date_joined: datetime = Field(
         default_factory=lambda: datetime.now(UTC), sa_column=Column(TIMESTAMP(timezone=True))
     )
-    hashed_password: str
+    hashed_password: str | None
     auth_method: str
-    yandex_id: str
+    yandex_id: str | None
 
 class UsersPublic(UsersBase):
     id: int
